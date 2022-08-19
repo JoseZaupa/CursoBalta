@@ -14,8 +14,11 @@ namespace Blog
             var connection = new SqlConnection(CONNECTION_STRING);
             connection.Open();
             //CreateUser();
-            ReadUsers(connection);
-            ReadURoles(connection);
+            //ReadUsers(connection);
+                ReadUsersWithRoles(connection);
+           // CreateUser(connection);
+            //ReadRoles(connection);
+            //ReadTags(connection);
             //ReadUser();
             //UpdateUser();
             //DeleteUser();
@@ -24,21 +27,66 @@ namespace Blog
         public static void ReadUsers(SqlConnection connection)
         {
             var repository = new Repository<User>(connection);
-            var users = repository.Get();
-            foreach (var user in users)
+            var items = repository.Get();
+            foreach (var item in items)
             {
-                 Console.WriteLine(user.Name);
+                 Console.WriteLine(item.Name);
+                foreach (var role in item.Roles)
+                {
+                    Console.WriteLine($" - {role.Name}");
+                }
             }        
            
         }
-
-        public static void ReadURoles(SqlConnection connection)
+        public static void ReadUsersWithRoles(SqlConnection connection)
         {
-            var repository = new RoleRepository(connection);
-            var roles = repository.Get();
-            foreach (var role in roles)
+            var repository = new UserRepository(connection);
+            var items = repository.GetWithRoles();
+            foreach (var item in items)
             {
-                Console.WriteLine(role.Name);
+                Console.WriteLine(item.Name);
+                foreach (var role in item.Roles)
+                {
+                    Console.WriteLine($" - {role.Name}");
+                }
+            }
+
+        }
+
+        public static void CreateUser(SqlConnection connection)
+        {
+            var user = new User() 
+            {
+                Email = "email@balta.io",
+                Bio = "bio",
+                Image = "image",
+                Name = "Name",
+                PasswordHash = "hash",
+                Slug = "slug"
+            };
+            var repository = new Repository<User>(connection);
+            repository.Create(user);
+            
+
+        }
+
+        public static void ReadRoles(SqlConnection connection)
+        {
+            var repository = new Repository<Role>(connection);
+            var items = repository.Get();
+            foreach (var item in items)
+            {
+                Console.WriteLine(item.Name);
+            }
+
+        }
+        public static void ReadTags(SqlConnection connection)
+        {
+            var repository = new Repository<Tag>(connection);
+            var items = repository.Get();
+            foreach (var item in items)
+            {
+                Console.WriteLine(item.Name);
             }
 
         }

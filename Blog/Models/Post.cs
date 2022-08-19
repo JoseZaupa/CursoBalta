@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace Blog.Models
 {
-    [Table("[Category]")]
-    public class Category
+    [Table("[Post]")]
+    public class Post
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Slug { get; set; }
-       
     }
 }

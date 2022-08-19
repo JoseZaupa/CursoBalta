@@ -1,52 +1,51 @@
 ﻿using Blog.Models;
-using Dapper.Contrib.Extensions;
+using Dapper;
 using Microsoft.Data.SqlClient;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Blog.Repositories
 {
-    public class UserRepository
+    public class UserRepository : Repository<User>
     {
         private readonly SqlConnection _connection;
         public UserRepository(SqlConnection connection)
-        {
-            _connection = connection;
-        }
-        
-        public IEnumerable<User> Get()
-            => _connection.GetAll<User>();
-       
-        public User Get(int id)
-            => _connection.Get<User>(id);
+        : base(connection)
+          => _connection = connection;
 
-        public void Create(User user)
-        {
-            user.Id = 0;
-            _connection.Insert<User>(user);
-        }
-        public void Update(User user)
-        {
-            if(user.Id != 0)
-                _connection.Update<User>(user); 
-        }
 
-        public void Deleter(User user)
+        public List<User> GetWithRoles()
         {
-            if (user.Id != 0)
-                _connection.Update<User>(user);
-        }
+            var query = @"
+                        Select [User].*,
+                               [Role].*
+                        From
+                               [User]
+                               LEFT JOIN[UserRole] ON[UserRole].[UserId] =[User].Id
+                               LEFT JOIN[Role] ON[UserRole].[RoleId] = [Role].[Id]";
+            var users = new List<User>();
 
-        public void Deleter(int id)
-        {
-            if (id == 0)
-                return;
-            var user = _connection.Get<User>(id);
-            _connection.Update<User>(user);
-        }
+            var items = _connection.Query<User, Role, User>(
+                query,
+                (user, role) =>
+                {
+                    var usr = users.FirstOrDefault(x => x.Id == user.Id);
+                    if (usr == null)
+                    {
+                        usr = user;
+                        if(role != null)
+                            usr.Roles.Add(role);
+                       
+                        users.Add(usr);
+                    }
+                    else
+                    {
+                        usr.Roles.Add(role);
+                    }
+                    return user;
+                }, splitOn: "Id");
 
+            return users;
+        }
     }
 }
