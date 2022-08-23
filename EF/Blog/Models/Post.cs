@@ -1,3 +1,5 @@
+using System;
+
 namespace Blog.Models
 {
     public class Post
@@ -10,6 +12,6 @@ namespace Blog.Models
         public string body { get; set; }
         public string Slug { get; set; }
         public DateTime CreateDate { get; set; }
-        public LastUpdate LastUpdate { get; set; }
+        public DateTime LastUpdate { get; set; }
     }
 }
