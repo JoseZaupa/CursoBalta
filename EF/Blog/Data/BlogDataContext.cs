@@ -16,7 +16,7 @@ namespace Blog.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder option)
         {
-            option.UseSqlServer("Password = CaiBr12345; Persist Security Info = True; User ID = sa; Initial Catalog = Blog; Data Source = BR-JZAUPA-L03; Encrypt = False");
+            option.UseSqlServer("Password = CaiBr12345; Persist Security Info = True; User ID = sa; Initial Catalog = BlogNvo; Data Source = BR-JZAUPA-L03; Encrypt = False");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

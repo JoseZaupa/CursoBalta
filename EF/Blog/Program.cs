@@ -13,34 +13,36 @@ namespace Blog
            using(var context = new BlogDataContext())
            {
 
-                //context.Users.Add(new User
-                //{
-                //    Bio = "9x Microsoft MVP",
-                //    Email = "jazjunior@balta.io",
-                //    Image = "https://balta.io",
-                //    Name = "André Baltieri",
-                //    PasswordHash = "1234",
-                //    Slug = "andre-baltiere"
-                //});
-                //context.SaveChanges();
-                var user = context.Users.FirstOrDefault();
-                var post = new Post
+                context.Users.Add(new User
                 {
-                    Author = user,
-                    Body = "Meu Artigo",
-                    Category = new Category
-                    {
-                        Name = "Backend",
-                        Slug = "backend"
-                    },
-                    CreateDate = System.DateTime.Now,
-                    Slug = "meu-artigo",
-                    Summary = "Neste artigo vamus conferir..." ,
-                    Title = "Meu artigo"
-                    
-                };
-                context.Posts.Add(post);
+                    Bio = "9x Microsoft MVP",
+                    Email = "jazjunior@balta.io",
+                    Image = "https://balta.io",
+                    Name = "André Baltieri",
+                    PasswordHash = "1234",
+                    Slug = "andre-baltiere",
+                    GitHub = "AndreBaltieri"
+                   
+                });
                 context.SaveChanges();
+                //var user = context.Users.FirstOrDefault();
+                //var post = new Post
+                //{
+                //    Author = user,
+                //    Body = "Meu Artigo",
+                //    Category = new Category
+                //    {
+                //        Name = "Backend",
+                //        Slug = "backend"
+                //    },
+                //    CreateDate = System.DateTime.Now,
+                //    Slug = "meu-artigo",
+                //    Summary = "Neste artigo vamus conferir..." ,
+                //    Title = "Meu artigo"
+
+                //};
+                //context.Posts.Add(post);
+                //context.SaveChanges();
                 //var tag = new Tag { Name = "ASP.NET", Slug = "aspnet" };
                 //context.Tags.Add(tag);
                 //context.SaveChanges();
@@ -72,7 +74,7 @@ namespace Blog
                 //{
                 //    Console.WriteLine(tag.Name);
                 //}
-               
+
             }
 
         }
