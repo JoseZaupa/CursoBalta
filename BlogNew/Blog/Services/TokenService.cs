@@ -1,9 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using Blog.Models;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Blog.Service
+namespace Blog.Services
 {
     public class TokenService
     {
@@ -13,8 +14,17 @@ namespace Blog.Service
             var key = Encoding.ASCII.GetBytes(Configuration.JwtKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                Subject = new ClaimsIdentity(new Claim[]{
+                    new (ClaimTypes.Name, "andrebaltieri"), //User.Identity.Name
+                    new (ClaimTypes.Role, "admin"), // User.IsInRole
+                    new (ClaimTypes.Role, "user"),
+                    new ("fruta","banana")
+                }),
+
                 Expires = DateTime.UtcNow.AddHours(8),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                     SecurityAlgorithms.HmacSha256Signature)
 
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
