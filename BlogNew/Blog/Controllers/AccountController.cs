@@ -3,7 +3,6 @@ using Blog.Extensions;
 using Blog.Models;
 using Blog.Services;
 using Blog.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SecureIdentity.Password;
@@ -20,7 +19,7 @@ namespace Blog.Controllers
                 [FromServices] BlogDataContext context)
         {
             if (!ModelState.IsValid)
-                return BadRequest(new ResultViewModels<string>(ModelState.GetErrors()));
+                return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
 
             var user = new User
             {
@@ -36,7 +35,7 @@ namespace Blog.Controllers
                 await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
 
-                return Ok(new ResultViewModels<dynamic>(new
+                return Ok(new ResultViewModel<dynamic>(new
                 {
                     user = user.Email,
                     password
@@ -44,17 +43,17 @@ namespace Blog.Controllers
             }
             catch (DbUpdateException)
             {
-                return StatusCode(400, new ResultViewModels<string>("05x99 - Este email já está cadastrado"));
+                return StatusCode(400, new ResultViewModel<string>("05x99 - Este email já está cadastrado"));
             }
         }
-
-        [HttpPost("v1/account/login")]
-        public async IActionResult Login([FromBody] LoginViewNodel model,
-            [FromServices] BlogDataContext context,
-            [FromServices] TokenService tokenService)
+        [HttpPost("v1/accounts/login")]
+        public async Task<IActionResult> Login(
+               [FromBody] LoginViewNodel model,
+               [FromServices] BlogDataContext context,
+               [FromServices] TokenService tokenService)
         {
-            if (ModelState.IsValid)
-                return BadRequest(new ResultViewModels<string>(ModelState.GetErrors()));
+            if (!ModelState.IsValid)
+                return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
 
             var user = await context
                 .Users
@@ -63,21 +62,20 @@ namespace Blog.Controllers
                 .FirstOrDefaultAsync(x => x.Email == model.Email);
 
             if (user == null)
-                return StatusCode(401, new ResultViewModels<string>("Usuário ou senha invaválidos"));
+                return StatusCode(401, new ResultViewModel<string>("Usuário ou senha inválidos"));
 
             if (!PasswordHasher.Verify(user.PasswordHash, model.Password))
-                return StatusCode(401, new ResultViewModels<string>("Usuário ou senha invaválidos"));
+                return StatusCode(401, new ResultViewModel<string>("Usuário ou senha inválidos"));
 
             try
             {
                 var token = tokenService.GenerateToken(user);
-                return Ok(new ResultViewModels<string>(token, null));
+                return Ok(new ResultViewModel<string>(token, null));
             }
             catch
             {
-                return StatusCode(500, new ResultViewModels<string>("05x4 - Falha interna no servidor"));
+                return StatusCode(500, new ResultViewModel<string>("05X04 - Falha interna no servidor"));
             }
         }
-
     }
 }

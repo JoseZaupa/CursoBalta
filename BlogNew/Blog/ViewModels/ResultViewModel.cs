@@ -1,21 +1,21 @@
 namespace Blog.ViewModels
 {
-    public class ResultViewModels<T>
+    public class ResultViewModel<T>
     {
-        public ResultViewModels(T data, List<string> errors)
+        public ResultViewModel(T data, List<string> errors)
         {
             Data = data;
             Errors = errors;
         }
-        public ResultViewModels(T data)
+        public ResultViewModel(T data)
         {
             Data = data;
         }
-        public ResultViewModels(List<string> errors)
+        public ResultViewModel(List<string> errors)
         {
             Errors = errors;
         }
-        public ResultViewModels(string error)
+        public ResultViewModel(string error)
         {
             Errors.Add(error);
         }
